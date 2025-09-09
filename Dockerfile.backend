@@ -1,0 +1,18 @@
+FROM node:20-alpine AS deps
+WORKDIR /app
+COPY package.json package-lock.json* .npmrc* ./
+COPY autosouq/backend/package.json autosouq/backend/package.json
+RUN npm install --workspace autosouq/backend --omit=dev
+
+FROM node:20-alpine AS build
+WORKDIR /app
+COPY . .
+RUN npm install --workspace autosouq/backend
+RUN npm -w autosouq/backend run build
+
+FROM node:20-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+COPY --from=build /app/autosouq/backend/dist ./dist
+COPY --from=build /app/autosouq/backend/package.json ./package.json
+CMD ["node", "dist/src/main.js"]

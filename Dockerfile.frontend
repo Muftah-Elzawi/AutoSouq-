@@ -1,0 +1,19 @@
+FROM node:20-alpine AS deps
+WORKDIR /app
+COPY package.json package-lock.json* .npmrc* ./
+COPY autosouq/frontend/package.json autosouq/frontend/package.json
+RUN npm install --workspace autosouq/frontend --omit=dev
+
+FROM node:20-alpine AS build
+WORKDIR /app
+COPY . .
+RUN npm install --workspace autosouq/frontend
+RUN npm -w autosouq/frontend run build
+
+FROM node:20-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+COPY --from=build /app/autosouq/frontend/.next ./.next
+COPY --from=build /app/autosouq/frontend/package.json ./package.json
+EXPOSE 3000
+CMD ["npx", "next", "start", "-p", "3000"]

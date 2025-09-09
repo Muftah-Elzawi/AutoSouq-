@@ -1,0 +1,35 @@
+{
+  "name": "autosouq-monorepo",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "autosouq/backend",
+    "autosouq/frontend",
+    "autosouq/shared"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm:dev:backend\" \"npm:dev:frontend\"",
+    "dev:backend": "npm --workspace autosouq/backend run start:dev",
+    "dev:frontend": "npm --workspace autosouq/frontend run dev",
+    "build": "npm -w autosouq/shared run build && npm -w autosouq/backend run build && npm -w autosouq/frontend run build",
+    "lint": "eslint . --ext .ts,.tsx",
+    "format": "prettier --write .",
+    "test": "npm -w autosouq/backend test && npm -w autosouq/frontend test",
+    "db:dev:setup": "npm -w autosouq/backend run db:dev:setup",
+    "db:seed": "npm -w autosouq/backend run seed"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "prettier": "^3.3.3",
+    "eslint": "^8.57.0",
+    "typescript": "^5.4.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.5"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": ["eslint --max-warnings=0"],
+    "*.{ts,tsx,js,jsx,json,md,css}": ["prettier --write"]
+  }
+}
