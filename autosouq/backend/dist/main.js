@@ -4,6 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
+// Ensure environment variables are loaded (works when running from monorepo root)
+require("dotenv/config");
 const core_1 = require("@nestjs/core");
 const app_module_1 = require("./modules/app.module");
 const swagger_1 = require("@nestjs/swagger");
